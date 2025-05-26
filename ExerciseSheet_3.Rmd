@@ -88,7 +88,29 @@ a)  Load the `pixar_films` dataset into R. Clean the dataset by removing
     the possible values and what do they mean? Create a factor variable
     for the film rating. Why is this appropriate?
 
-<!-- -->
+```{r load pixarfilms and inspect, echo=TRUE}
+library(tidyverse)
+
+pixar_films <- read_csv("pixar_films.csv")
+
+glimpse(pixar_films)
+
+pixar_films_wo_na <- pixar_films %>%
+  filter(!is.na(film))
+
+glimpse(pixar_films_wo_na$film_rating)
+```
+
+
+The possible values for "film_rating" are G, PG or N/A. G means that the film is for "all ages admitted" and PG means that the "Parental Guidance" is suggested. "N/A" means that there is no value available for a specific film. 
+
+```{r Create factor variable from film_raing, echo=TRUE}
+film_rating <- c("G", "PG", "N/A")
+factor_film_rating <- factor(film_rating, levels = c("G", "PG", "N/A"))
+```
+
+It is appropriate because the different film_ratings can be ordered. "G" is lower age than "PG" so factoring the variable makes it easiert to work with it. 
+
 
 b)  Inspect the film titles manually. Which films form a film series? A
     film series can be identified by a common word in the titles of the
