@@ -118,6 +118,36 @@ b)  Inspect the film titles manually. Which films form a film series? A
     e.g. "Despicable Me" and "Despicable Me 2". Create a dataframe which
     displays a list of the different series with the titles of the films
     and how many films belong to the series. Output the dataframe.
+    
+```{r Inspect for series, echo=TRUE}
+glimpse(pixar_films_wo_na)
+
+# glimpse does not show enough, so i had to take a look in the dataframe
+```
+
+The Film Series are Cars, Finding Dori & Nemo, Monsters Movies, Incredibles & Toy Story. 
+
+```{r create df with series, echo=TRUE}
+pixar_films_series <- pixar_films_wo_na %>%
+  mutate(
+    series = case_when(
+      str_detect(film, "Cars") ~ "Cars",
+      str_detect(film, "Finding") ~ "Finding Dori & Nemo",
+      str_detect(film, "Monsters") ~ "Monsters",
+      str_detect(film, "Incredibles") ~ "Incredibles",
+      str_detect(film, "Toy Story") ~ "Toy Story",
+    )
+  )
+
+pixar_films_series <- pixar_films_series %>%
+  filter(!is.na(series)) %>%
+  group_by(series) %>%
+  summarise(
+    film_titles = paste (film, collapse = ", "),
+    number_of_films = n(),
+  )
+```
+
 
 c)  Load the `public_response` dataframe into R. Convert the
     `cinema_score` variable into a factor while ensuring the factor
