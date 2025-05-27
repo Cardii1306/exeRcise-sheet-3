@@ -230,17 +230,79 @@ b)  Download the dataset and track it in git.
 
 c)  Put the name / title of the dataset and a link to it below.
 
--   Dataset Name: ...
--   Link: <https://github.com/owid/owid-datasets/>...
+- Dataset Name: Alcohol consumption in USA since 1850 — NIAAA  
+- Link: <https://github.com/owid/owid-datasets/blob/master/datasets/Alcohol%20consumption%20in%20USA%20since%201850%20%E2%80%94%20NIAAA/Alcohol%20consumption%20in%20USA%20since%201850%20%E2%80%94%20NIAAA.csv>
+
 
 d)  Come up with a (research) question you want to answer with the data
     and briefly explain why you believe this is an interesting question
     within one sentence. It should be a question that can be answered
     with the dataset and using R.
+    
+Is there a noticeable change in Alcohol consumption in the 150+ years or any trends? And is there a shift in between the different types of alcohol (beer, wine & sporits)?
+
 e)  Use R to answer your chosen question. Please limit your analysis to
     the functions and techniques we have covered so far in the course.
     You are **not expected** to use advanced statistical models or
     external packages which haven't been introduced.
+    
+```{r}
+alcohol_data <- read_csv("Alcohol_consumption_US_form_1850.csv")
+glimpse(alcohol_data)
+
+alcohol_data <- alcohol_data %>%
+  rename(
+    Year = Year,
+    Beer = `Beer (NIAAA)`,
+    Wine = `Wine (NIAAA)`,
+    Spirits = `Spirits (NIAAA)`,
+    All = `All beverages (NIAAA)`
+  )
+
+```
+
+
+```{r}
+model_all <- lm(All ~ Beer, data = alcohol_data)
+summary(model_all)
+```
+
+
+```{r}
+
+
+
+alcohol_data <- alcohol_data %>%
+  mutate(predicted_all = predict(model_all))
+
+ggplot(alcohol_data, aes(x = All, y = predicted_all)) +
+  geom_point(color = "steelblue") +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  labs(
+    title = "Predicted vs. Actual Total Alcohol Consumption",
+    x = "Actual",
+    y = "Predicted"
+  ) +
+  theme_minimal()
+
+ggplot(alcohol_data, aes(x = Year)) +
+  geom_line(aes(y = Beer, color = "Beer"), size = 1.2) +
+  geom_line(aes(y = Wine, color = "Wine"), size = 1.2) +
+  geom_line(aes(y = Spirits, color = "Spirits"), size = 1.2) +
+  labs(
+    title = "Alcohol Consumption Trends in the USA (1850–Present)",
+    x = "Year",
+    y = "Liters of Alcohol per Capita",
+    color = "Alcohol Type"
+  ) +
+  theme_minimal()
+
+```
+    
+    
+
+
+
 f)  Create a meaningful plot / figure with the dataset. Make sure to
     provide a figure caption (via the chunk options / Rmarkdown) and
     correctly label the figure.
