@@ -247,6 +247,8 @@ e)  Use R to answer your chosen question. Please limit your analysis to
     You are **not expected** to use advanced statistical models or
     external packages which haven't been introduced.
     
+    
+
 ```{r loading and converting the data, echo=TRUE}
 alcohol_data <- read_csv("Alcohol_consumption_US_form_1850.csv")
 glimpse(alcohol_data)
@@ -261,6 +263,27 @@ alcohol_data <- alcohol_data %>%
   )
 
 ```
+
+```{r check if before 1950 or after 1950 there was more alcohol consumption, echo=TRUE}
+alcohol_data %>%
+  mutate(period = if_else(Year < 1950, "Before 1950", "1950 and after")) %>%
+  group_by(period) %>%
+  summarise(avg_total = mean(All, na.rm = TRUE))
+```
+
+
+```{r check how the average consumption has changen over 20 year periods, echo=TRUE}
+alcohol_data %>%
+  mutate(period = floor((Year - 10) / 20) * 20 + 10) %>%
+  group_by(period) %>%
+  summarise(
+    avg_beer = mean(Beer, na.rm = TRUE),
+    avg_wine = mean(Wine, na.rm = TRUE),
+    avg_spirits = mean(Spirits, na.rm = TRUE)
+  )
+```
+
+From the functions above we can answer my question the following way: The alcohol consumption after 1950 is higher than in the period from 1850 to 1950. So there is an upwards shift in alcohol consumption. Moreover there is a clear indicator that the consumption of wine and beer is growing over the years but the consumption of spirits is shrinking.
 
 
 f)  Create a meaningful plot / figure with the dataset. Make sure to
@@ -283,6 +306,19 @@ ggplot(alcohol_data, aes(x = Year)) +
   theme_minimal()
 
 ```
+The Figure supports what I said above, but there is one interessing fact to see. The Alcohol Consumption in the 1920s & 30s is at 0, that comes from the prohibition of alcohol in the United States. That could lead to a missinterpreation of the "before and after 1950" average alcohol consumption. It may be a good year to check if the alcohol conumption was higher or lower before or after the prohibition. So i will check for this as an addon. 
+
+```{r check if before prohibition or after there was more alcohol consumption, echo=TRUE}
+alcohol_data %>%
+  filter(Year < 1920 | Year > 1933) %>%
+  mutate(period = if_else(Year < 1920, "Before Prohibition", "After Prohibition")) %>%
+  group_by(period) %>%
+  summarise(avg_total = mean(All, na.rm = TRUE))
+
+```
+
+It is interesting to see that the average alcohol consum is still higher after prohibition, but the difference is way smaller. So there is not a real effect to detect trough the prohibition. 
+
 
 ## Final Note
 
