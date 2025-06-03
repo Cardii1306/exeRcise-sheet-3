@@ -133,7 +133,7 @@ glimpse(pixar_films_wo_na)
 # glimpse does not show enough, so i had to take a look in the dataframe
 ```
 
-The Film Series are Cars, Finding Dori & Nemo, Monsters Movies, Incredibles & Toy Story. 
+The Film Series are Cars, Finding Dori & Nemo, Monsters Movies, Incredibles & Toy Story. We can check for series by looking at the titles or check the internet. With the "String Detect" in the following I check for Keywords and therefore add them to a series. 
 
 ```{r create df with series, echo=TRUE}
 # catch if the film is in a series and name them in an extra culumn after their series name
@@ -225,7 +225,7 @@ ggplot(pixar_combined, aes(x = series, y = metacritic, fill = film)) +
   labs(
     title = "Metacritic Score for Pixar Film Series",
     x = "Series",
-    y = "Metacritic",
+    y = "Metacritic Score (0 - 100)",
     fill = "Film Title"
   ) +
   theme_minimal()
@@ -318,7 +318,7 @@ ggplot(alcohol_data, aes(x = Year)) +
   labs(
     title = "Alcohol Consumption Trends in the USA (1850–Present)",
     x = "Year",
-    y = "Liters of Alcohol per Capita",
+    y = "Liters of Alcohol per Person",
     color = "Alcohol Type",
     caption = "Source: Our World in Data (https://github.com/owid/owid-datasets/tree/master/datasets)"
   ) +
